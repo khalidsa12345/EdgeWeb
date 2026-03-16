@@ -223,3 +223,4 @@ C:\Users\KhaledAburas\OneDrive - UBA\Desktop\EDGE\EdgeWEB\EdgeWEB\bin\Debug\net1
 C:\Users\KhaledAburas\OneDrive - UBA\Desktop\EDGE\EdgeWEB\EdgeWEB\bin\Debug\net10.0\runtimes\win-arm64\native\Microsoft.Data.SqlClient.SNI.dll
 C:\Users\KhaledAburas\OneDrive - UBA\Desktop\EDGE\EdgeWEB\EdgeWEB\bin\Debug\net10.0\runtimes\win-x64\native\Microsoft.Data.SqlClient.SNI.dll
 C:\Users\KhaledAburas\OneDrive - UBA\Desktop\EDGE\EdgeWEB\EdgeWEB\bin\Debug\net10.0\runtimes\win-x86\native\Microsoft.Data.SqlClient.SNI.dll
+C:\Users\KhaledAburas\OneDrive - UBA\Desktop\EDGE\EdgeWEB\EdgeWEB\obj\Debug\net10.0\EdgeWEB.sourcelink.json
