@@ -1,0 +1,1210 @@
+﻿@{
+    ViewData["Title"] = "Clients";
+}
+
+<style>
+    :root {
+        --navy-deep: #060F1E;
+        --navy-main: #0B1D35;
+        --blue-primary: #1A4A8A;
+        --blue-soft: #2563B0;
+        --gold-accent: #C9A84C;
+        --gold-light: #E8C96A;
+        --text-white: #FFFFFF;
+        --text-muted: rgba(255,255,255,0.72);
+        --text-subtle: rgba(255,255,255,0.42);
+    }
+
+    *, *::before, *::after {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+    }
+
+    html {
+        scroll-behavior: smooth;
+    }
+
+    body {
+        background: var(--navy-deep);
+        color: var(--text-white);
+        overflow-x: hidden;
+        font-family: 'Segoe UI', 'Helvetica Neue', system-ui, sans-serif;
+        -webkit-font-smoothing: antialiased;
+    }
+
+    /* ===================== ANIMATIONS ===================== */
+    @@keyframes fadeUp {
+        from {
+            opacity: 0;
+            transform: translateY(32px);
+        }
+
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+
+    @@keyframes fadeDown {
+        from {
+            opacity: 0;
+            transform: translateY(-24px);
+        }
+
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+
+    @@keyframes fadeIn {
+        from {
+            opacity: 0;
+        }
+
+        to {
+            opacity: 1;
+        }
+    }
+
+    @@keyframes shimmerLine {
+        0% {
+            transform: translateX(-100%);
+        }
+
+        100% {
+            transform: translateX(200%);
+        }
+    }
+
+    @@keyframes gradientShift {
+        0%, 100% {
+            background-position: 0% 50%;
+        }
+
+        50% {
+            background-position: 100% 50%;
+        }
+    }
+
+    @@keyframes dotPulse {
+        0%, 100% {
+            opacity: 1;
+            transform: scale(1);
+        }
+
+        50% {
+            opacity: 0.5;
+            transform: scale(0.7);
+        }
+    }
+
+    @@keyframes scanLine {
+        0% {
+            top: -4px;
+        }
+
+        100% {
+            top: 100%;
+        }
+    }
+
+    @@keyframes float {
+        0%, 100% {
+            transform: translateY(0);
+        }
+
+        50% {
+            transform: translateY(-12px);
+        }
+    }
+
+    @@keyframes cardReveal {
+        from {
+            opacity: 0;
+            transform: translateY(24px);
+        }
+
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+
+    @@keyframes counterUp {
+        from {
+            opacity: 0;
+            transform: translateY(16px);
+        }
+
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+
+    @@keyframes lineGrow {
+        from {
+            width: 0;
+        }
+
+        to {
+            width: 56px;
+        }
+    }
+
+    @@keyframes tickerScroll {
+        0% {
+            transform: translateX(0);
+        }
+
+        100% {
+            transform: translateX(-50%);
+        }
+    }
+
+    /* ===================== HERO ===================== */
+    .clients-hero {
+        min-height: 72vh;
+        position: relative;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        padding: 170px 7% 130px;
+        overflow: hidden;
+        isolation: isolate;
+        text-align: center;
+    }
+
+    .hero-video-bg {
+        position: absolute;
+        inset: 0;
+        z-index: -3;
+        overflow: hidden;
+    }
+
+        .hero-video-bg video {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            opacity: 0.22;
+            filter: brightness(0.5) saturate(0.6) hue-rotate(200deg);
+        }
+
+    .hero-overlay-base {
+        position: absolute;
+        inset: 0;
+        z-index: -2;
+        background: linear-gradient(160deg,rgba(6,15,30,0.9) 0%,rgba(11,29,53,0.76) 50%,rgba(6,15,30,0.94) 100%);
+    }
+
+    .hero-overlay-radial {
+        position: absolute;
+        inset: 0;
+        z-index: -1;
+        background: radial-gradient(ellipse 75% 65% at 50% 50%,rgba(37,99,176,0.14) 0%,transparent 70%), radial-gradient(ellipse 35% 25% at 80% 20%,rgba(201,168,76,0.07) 0%,transparent 60%);
+    }
+
+    .clients-hero::after {
+        content: "";
+        position: absolute;
+        inset: 0;
+        background-image: linear-gradient(rgba(255,255,255,0.022) 1px,transparent 1px), linear-gradient(90deg,rgba(255,255,255,0.022) 1px,transparent 1px);
+        background-size: 80px 80px;
+        z-index: -1;
+        pointer-events: none;
+    }
+
+    .hero-scanline {
+        position: absolute;
+        left: 0;
+        right: 0;
+        height: 2px;
+        background: linear-gradient(90deg,transparent,rgba(59,130,246,0.22),transparent);
+        z-index: 0;
+        animation: scanLine 10s linear infinite;
+        pointer-events: none;
+    }
+
+    .hero-inner {
+        position: relative;
+        z-index: 1;
+        max-width: 860px;
+        margin: 0 auto;
+        animation: fadeIn 1.3s ease-out;
+    }
+
+    .hero-eyebrow {
+        display: inline-flex;
+        align-items: center;
+        gap: 10px;
+        padding: 7px 20px;
+        background: rgba(201,168,76,0.08);
+        border: 1px solid rgba(201,168,76,0.22);
+        border-radius: 100px;
+        font-size: 0.7rem;
+        font-weight: 700;
+        letter-spacing: 3px;
+        text-transform: uppercase;
+        color: var(--gold-light);
+        margin-bottom: 28px;
+        animation: fadeDown 0.9s ease-out 0.2s backwards;
+        position: relative;
+        overflow: hidden;
+    }
+
+        .hero-eyebrow::after {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 40%;
+            height: 100%;
+            background: linear-gradient(90deg,transparent,rgba(255,255,255,0.12),transparent);
+            animation: shimmerLine 3.5s ease-in-out infinite;
+        }
+
+    .eyebrow-dot {
+        width: 5px;
+        height: 5px;
+        background: var(--gold-accent);
+        border-radius: 50%;
+        animation: dotPulse 2s ease-in-out infinite;
+    }
+
+    .clients-hero h1 {
+        font-size: clamp(2.9rem,5.8vw,4.8rem);
+        font-weight: 300;
+        line-height: 1.1;
+        letter-spacing: -0.03em;
+        margin-bottom: 26px;
+        animation: fadeDown 0.9s ease-out 0.35s backwards;
+    }
+
+        .clients-hero h1 strong {
+            font-weight: 800;
+            display: block;
+            background: linear-gradient(120deg,#FFFFFF 0%,#A8CBFF 50%,#FFFFFF 100%);
+            background-size: 200% 200%;
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            animation: gradientShift 6s ease infinite 1s;
+        }
+
+    .hero-divider {
+        width: 56px;
+        height: 2px;
+        background: linear-gradient(90deg,var(--gold-accent),transparent);
+        margin: 26px auto;
+        animation: lineGrow 1s ease-out 0.6s backwards;
+    }
+
+    .clients-hero p {
+        font-size: clamp(1rem,1.8vw,1.2rem);
+        color: var(--text-muted);
+        line-height: 1.8;
+        max-width: 700px;
+        margin: 0 auto;
+        animation: fadeDown 0.9s ease-out 0.55s backwards;
+    }
+
+    .hero-scroll {
+        position: absolute;
+        bottom: 40px;
+        left: 50%;
+        transform: translateX(-50%);
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 8px;
+        z-index: 1;
+        animation: fadeIn 1.2s ease-out 1.1s backwards;
+    }
+
+        .hero-scroll span {
+            font-size: 0.62rem;
+            letter-spacing: 3px;
+            text-transform: uppercase;
+            color: var(--text-subtle);
+            font-weight: 600;
+        }
+
+    .scroll-line {
+        width: 1px;
+        height: 48px;
+        background: linear-gradient(180deg,var(--gold-accent),transparent);
+        animation: float 2s ease-in-out infinite;
+    }
+
+    /* ===================== SECTION LABEL ===================== */
+    .section-label {
+        display: inline-flex;
+        align-items: center;
+        gap: 10px;
+        font-size: 0.68rem;
+        font-weight: 700;
+        text-transform: uppercase;
+        letter-spacing: 3px;
+        color: var(--gold-accent);
+        margin-bottom: 20px;
+    }
+
+        .section-label::before {
+            content: "";
+            width: 24px;
+            height: 1px;
+            background: var(--gold-accent);
+        }
+
+    /* ===================== STATS BAR ===================== */
+    .stats-bar {
+        padding: 0 7%;
+        background: rgba(6,15,30,0.92);
+        border-top: 1px solid rgba(255,255,255,0.06);
+        border-bottom: 1px solid rgba(255,255,255,0.06);
+        backdrop-filter: blur(20px);
+    }
+
+    .stats-bar-inner {
+        max-width: 1100px;
+        margin: 0 auto;
+        display: grid;
+        grid-template-columns: repeat(4,1fr);
+    }
+
+    .stats-bar-item {
+        padding: 40px 20px;
+        text-align: center;
+        position: relative;
+        animation: counterUp 0.8s ease-out backwards;
+    }
+
+        .stats-bar-item:nth-child(1) {
+            animation-delay: 0.1s;
+        }
+
+        .stats-bar-item:nth-child(2) {
+            animation-delay: 0.2s;
+        }
+
+        .stats-bar-item:nth-child(3) {
+            animation-delay: 0.3s;
+        }
+
+        .stats-bar-item:nth-child(4) {
+            animation-delay: 0.4s;
+        }
+
+        .stats-bar-item + .stats-bar-item::before {
+            content: "";
+            position: absolute;
+            left: 0;
+            top: 25%;
+            bottom: 25%;
+            width: 1px;
+            background: rgba(255,255,255,0.07);
+        }
+
+        .stats-bar-item h2 {
+            font-size: clamp(2rem,3.5vw,2.9rem);
+            font-weight: 800;
+            letter-spacing: -0.03em;
+            line-height: 1;
+            margin-bottom: 8px;
+            background: linear-gradient(135deg,#fff 0%,rgba(201,168,76,0.9) 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .stats-bar-item p {
+            font-size: 0.78rem;
+            color: var(--text-subtle);
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            font-weight: 600;
+        }
+
+    /* ===================== TICKER ===================== */
+    .ticker-section {
+        padding: 48px 0;
+        background: rgba(6,15,30,0.7);
+        border-bottom: 1px solid rgba(255,255,255,0.05);
+        overflow: hidden;
+        position: relative;
+    }
+
+        .ticker-section::before, .ticker-section::after {
+            content: "";
+            position: absolute;
+            top: 0;
+            bottom: 0;
+            width: 140px;
+            z-index: 2;
+            pointer-events: none;
+        }
+
+        .ticker-section::before {
+            left: 0;
+            background: linear-gradient(90deg,rgba(6,15,30,1) 0%,transparent 100%);
+        }
+
+        .ticker-section::after {
+            right: 0;
+            background: linear-gradient(270deg,rgba(6,15,30,1) 0%,transparent 100%);
+        }
+
+    .ticker-track {
+        display: flex;
+        gap: 64px;
+        align-items: center;
+        width: max-content;
+        animation: tickerScroll 40s linear infinite;
+    }
+
+        .ticker-track:hover {
+            animation-play-state: paused;
+        }
+
+    .ticker-logo {
+        height: 46px;
+        width: auto;
+        max-width: 130px;
+        object-fit: contain;
+        opacity: 0.7;
+        transition: opacity 0.3s,transform 0.3s;
+        flex-shrink: 0;
+        background: white;
+        padding: 6px 10px;
+        border-radius: 6px;
+    }
+
+        .ticker-logo:hover {
+            opacity: 1;
+            transform: scale(1.1);
+        }
+
+    /* ===================== CLIENTS SECTION ===================== */
+    .clients-section {
+        padding: 110px 7% 100px;
+        position: relative;
+        background: linear-gradient(180deg,var(--navy-deep) 0%,#091829 60%,var(--navy-deep) 100%);
+    }
+
+        .clients-section::before {
+            content: "";
+            position: absolute;
+            inset: 0;
+            background-image: radial-gradient(rgba(59,130,246,0.032) 1px,transparent 1px);
+            background-size: 40px 40px;
+            pointer-events: none;
+        }
+
+    .clients-header {
+        text-align: center;
+        max-width: 700px;
+        margin: 0 auto 56px;
+    }
+
+        .clients-header h2 {
+            font-size: clamp(2.1rem,3.8vw,3rem);
+            font-weight: 300;
+            letter-spacing: -0.025em;
+            line-height: 1.2;
+            margin-bottom: 16px;
+        }
+
+            .clients-header h2 strong {
+                font-weight: 800;
+            }
+
+        .clients-header p {
+            font-size: clamp(1rem,1.5vw,1.08rem);
+            color: var(--text-muted);
+            line-height: 1.75;
+        }
+
+    /* Filter tabs */
+    .sector-tabs {
+        display: flex;
+        justify-content: center;
+        flex-wrap: wrap;
+        gap: 10px;
+        margin-bottom: 52px;
+        max-width: 900px;
+        margin-left: auto;
+        margin-right: auto;
+    }
+
+    .sector-tab {
+        padding: 9px 24px;
+        border-radius: 100px;
+        font-size: 0.75rem;
+        font-weight: 700;
+        letter-spacing: 1.5px;
+        text-transform: uppercase;
+        cursor: pointer;
+        border: 1px solid rgba(255,255,255,0.12);
+        background: rgba(255,255,255,0.04);
+        color: var(--text-muted);
+        transition: all 0.25s ease;
+        user-select: none;
+    }
+
+        .sector-tab:hover, .sector-tab.active {
+            background: rgba(201,168,76,0.12);
+            border-color: rgba(201,168,76,0.4);
+            color: var(--gold-light);
+        }
+
+    /* ===================== GRID ===================== */
+    .clients-grid {
+        max-width: 1380px;
+        margin: 0 auto;
+        display: grid;
+        grid-template-columns: repeat(4,1fr);
+        gap: 24px;
+    }
+
+    /* ===================== CLIENT CARD ===================== */
+    .client-card {
+        background: rgba(11,29,53,0.7);
+        border: 1px solid rgba(255,255,255,0.09);
+        border-radius: 18px;
+        padding: 28px 22px 24px;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 16px;
+        position: relative;
+        overflow: hidden;
+        cursor: pointer;
+        transition: all 0.4s cubic-bezier(0.4,0,0.2,1);
+        animation: cardReveal 0.6s ease-out backwards;
+        backdrop-filter: blur(10px);
+    }
+
+        .client-card:nth-child(1) {
+            animation-delay: 0.04s;
+        }
+
+        .client-card:nth-child(2) {
+            animation-delay: 0.08s;
+        }
+
+        .client-card:nth-child(3) {
+            animation-delay: 0.12s;
+        }
+
+        .client-card:nth-child(4) {
+            animation-delay: 0.16s;
+        }
+
+        .client-card:nth-child(5) {
+            animation-delay: 0.20s;
+        }
+
+        .client-card:nth-child(6) {
+            animation-delay: 0.24s;
+        }
+
+        .client-card:nth-child(7) {
+            animation-delay: 0.28s;
+        }
+
+        .client-card:nth-child(8) {
+            animation-delay: 0.32s;
+        }
+
+        .client-card:nth-child(9) {
+            animation-delay: 0.36s;
+        }
+
+        .client-card:nth-child(10) {
+            animation-delay: 0.40s;
+        }
+
+        .client-card:nth-child(11) {
+            animation-delay: 0.44s;
+        }
+
+        .client-card:nth-child(12) {
+            animation-delay: 0.48s;
+        }
+
+        .client-card:nth-child(n+13) {
+            animation-delay: 0.52s;
+        }
+
+        /* Gold top bar */
+        .client-card::before {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 3px;
+            background: linear-gradient(90deg,var(--gold-accent),var(--gold-light),var(--gold-accent));
+            background-size: 200% 100%;
+            opacity: 0;
+            transition: opacity 0.35s;
+            z-index: 2;
+            animation: shimmerLine 3s linear infinite;
+        }
+
+        .client-card:hover {
+            transform: translateY(-8px);
+            border-color: rgba(255,255,255,0.18);
+            box-shadow: 0 24px 60px rgba(0,0,0,0.5),0 0 30px rgba(37,99,176,0.12);
+            background: rgba(11,29,53,0.95);
+        }
+
+            .client-card:hover::before {
+                opacity: 1;
+            }
+
+    /* ---- LOGO BOX: always white, always visible ---- */
+    .client-logo-wrap {
+        width: 100%;
+        height: 110px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        background: #ffffff;
+        border-radius: 12px;
+        padding: 16px 20px;
+        position: relative;
+        z-index: 1;
+        flex-shrink: 0;
+        transition: box-shadow 0.35s, transform 0.35s;
+        box-shadow: 0 2px 12px rgba(0,0,0,0.18);
+    }
+
+    .client-card:hover .client-logo-wrap {
+        box-shadow: 0 8px 28px rgba(0,0,0,0.3);
+        transform: scale(1.03);
+    }
+
+    .client-logo {
+        max-width: 150px;
+        max-height: 75px;
+        width: auto;
+        height: auto;
+        object-fit: contain;
+        display: block;
+        /* No filter at all — full colour, always visible */
+        transition: transform 0.35s;
+    }
+
+    .client-card:hover .client-logo {
+        transform: scale(1.07);
+    }
+
+    /* Name */
+    .client-name {
+        font-size: 0.88rem;
+        font-weight: 600;
+        text-align: center;
+        color: var(--text-muted);
+        letter-spacing: 0.3px;
+        line-height: 1.45;
+        transition: color 0.3s;
+        position: relative;
+        z-index: 1;
+    }
+
+    .client-card:hover .client-name {
+        color: #fff;
+    }
+
+    /* Sector badge */
+    .client-sector {
+        font-size: 0.6rem;
+        font-weight: 700;
+        letter-spacing: 1.8px;
+        text-transform: uppercase;
+        padding: 4px 12px;
+        border-radius: 100px;
+        background: rgba(201,168,76,0.08);
+        border: 1px solid rgba(201,168,76,0.2);
+        color: rgba(201,168,76,0.65);
+        position: relative;
+        z-index: 1;
+        transition: background 0.3s,color 0.3s,border-color 0.3s;
+    }
+
+    .client-card:hover .client-sector {
+        background: rgba(201,168,76,0.18);
+        border-color: rgba(201,168,76,0.5);
+        color: var(--gold-light);
+    }
+
+    /* ===================== VISION ===================== */
+    .vision-section {
+        padding: 120px 7%;
+        background: linear-gradient(160deg,#050D1A 0%,#0B1D35 50%,#050D1A 100%);
+        border-top: 1px solid rgba(255,255,255,0.05);
+        border-bottom: 1px solid rgba(255,255,255,0.05);
+        position: relative;
+        overflow: hidden;
+        text-align: center;
+    }
+
+        .vision-section::before {
+            content: "";
+            position: absolute;
+            width: 700px;
+            height: 700px;
+            border-radius: 50%;
+            background: radial-gradient(circle,rgba(59,130,246,0.06) 0%,transparent 70%);
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%,-50%);
+            pointer-events: none;
+        }
+
+    .vision-quote {
+        position: relative;
+        max-width: 900px;
+        margin: 0 auto;
+    }
+
+    .vision-mark {
+        font-size: 7rem;
+        line-height: 0.6;
+        font-family: Georgia,serif;
+        color: rgba(201,168,76,0.15);
+        display: block;
+        margin-bottom: 24px;
+        user-select: none;
+    }
+
+    .vision-text {
+        font-size: clamp(1.45rem,3.2vw,2.3rem);
+        font-weight: 300;
+        line-height: 1.65;
+        letter-spacing: -0.01em;
+        color: rgba(255,255,255,0.9);
+    }
+
+        .vision-text strong {
+            font-weight: 700;
+            color: #fff;
+        }
+
+    /* ===================== CTA ===================== */
+    .cta-section {
+        padding: 130px 7%;
+        text-align: center;
+        position: relative;
+        overflow: hidden;
+    }
+
+        .cta-section::before {
+            content: "";
+            position: absolute;
+            inset: 0;
+            background: linear-gradient(160deg,rgba(26,74,138,0.9) 0%,rgba(37,99,176,0.85) 50%,rgba(11,29,53,0.95) 100%);
+            z-index: -1;
+        }
+
+        .cta-section::after {
+            content: "";
+            position: absolute;
+            inset: 0;
+            background-image: linear-gradient(rgba(255,255,255,0.03) 1px,transparent 1px), linear-gradient(90deg,rgba(255,255,255,0.03) 1px,transparent 1px);
+            background-size: 60px 60px;
+            z-index: -1;
+        }
+
+        .cta-section h2 {
+            font-size: clamp(2.3rem,4.2vw,3.4rem);
+            font-weight: 300;
+            letter-spacing: -0.025em;
+            margin-bottom: 20px;
+        }
+
+            .cta-section h2 strong {
+                font-weight: 800;
+            }
+
+        .cta-section p {
+            max-width: 560px;
+            margin: 0 auto 48px;
+            color: var(--text-muted);
+            font-size: clamp(1rem,1.7vw,1.12rem);
+            line-height: 1.75;
+            animation: fadeUp 0.8s ease-out 0.2s backwards;
+        }
+
+    .cta-actions {
+        display: flex;
+        gap: 16px;
+        justify-content: center;
+        flex-wrap: wrap;
+        animation: fadeUp 0.8s ease-out 0.35s backwards;
+    }
+
+    .btn-primary {
+        position: relative;
+        background: linear-gradient(135deg,var(--blue-primary),var(--blue-soft));
+        color: #fff;
+        padding: 15px 38px;
+        border-radius: 8px;
+        font-weight: 700;
+        font-size: 0.95rem;
+        letter-spacing: 0.03em;
+        text-decoration: none;
+        display: inline-flex;
+        align-items: center;
+        gap: 10px;
+        transition: all 0.3s cubic-bezier(0.4,0,0.2,1);
+        box-shadow: 0 4px 24px rgba(26,74,138,0.35),inset 0 1px 0 rgba(255,255,255,0.1);
+        overflow: hidden;
+    }
+
+        .btn-primary::before {
+            content: "";
+            position: absolute;
+            inset: 0;
+            background: linear-gradient(135deg,rgba(255,255,255,0.12),transparent);
+            opacity: 0;
+            transition: opacity 0.3s;
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 12px 40px rgba(26,74,138,0.5);
+        }
+
+            .btn-primary:hover::before {
+                opacity: 1;
+            }
+
+    .btn-secondary {
+        border: 1.5px solid rgba(255,255,255,0.2);
+        color: var(--text-white);
+        padding: 15px 38px;
+        border-radius: 8px;
+        font-weight: 600;
+        font-size: 0.95rem;
+        letter-spacing: 0.03em;
+        text-decoration: none;
+        display: inline-flex;
+        align-items: center;
+        gap: 10px;
+        transition: all 0.3s cubic-bezier(0.4,0,0.2,1);
+        backdrop-filter: blur(8px);
+        background: rgba(255,255,255,0.04);
+    }
+
+        .btn-secondary:hover {
+            border-color: rgba(255,255,255,0.45);
+            background: rgba(255,255,255,0.08);
+            transform: translateY(-3px);
+        }
+
+    /* ===================== RESPONSIVE ===================== */
+    @@media (max-width:1200px) {
+        .clients-grid {
+            grid-template-columns: repeat(3,1fr);
+        }
+    }
+
+    @@media (max-width:992px) {
+        .clients-hero {
+            padding: 150px 6% 110px;
+        }
+
+        .clients-section {
+            padding: 90px 6% 80px;
+        }
+
+        .stats-bar {
+            padding: 0 6%;
+        }
+
+        .stats-bar-inner {
+            grid-template-columns: repeat(2,1fr);
+        }
+
+        .stats-bar-item:nth-child(3)::before {
+            display: none;
+        }
+    }
+
+    @@media (max-width:768px) {
+        .clients-hero {
+            padding: 130px 5% 90px;
+            min-height: 60vh;
+        }
+
+        .clients-section {
+            padding: 80px 5%;
+        }
+
+        .clients-grid {
+            grid-template-columns: repeat(2,1fr);
+            gap: 16px;
+        }
+
+        .client-logo-wrap {
+            height: 95px;
+        }
+
+        .vision-section {
+            padding: 90px 5%;
+        }
+
+        .cta-section {
+            padding: 90px 5%;
+        }
+
+        .hero-scroll {
+            display: none;
+        }
+
+        .ticker-section {
+            display: none;
+        }
+    }
+
+    @@media (max-width:576px) {
+        .clients-hero {
+            padding: 110px 4% 70px;
+        }
+
+        .clients-section {
+            padding: 70px 4%;
+        }
+
+        .clients-grid {
+            grid-template-columns: repeat(2,1fr);
+            gap: 12px;
+        }
+
+        .client-card {
+            padding: 20px 14px 18px;
+            gap: 12px;
+        }
+
+        .client-logo-wrap {
+            height: 84px;
+            padding: 12px 14px;
+        }
+
+        .client-logo {
+            max-width: 110px;
+            max-height: 58px;
+        }
+
+        .client-name {
+            font-size: 0.8rem;
+        }
+
+        .client-sector {
+            display: none;
+        }
+
+        .stats-bar {
+            padding: 0 4%;
+        }
+
+        .stats-bar-inner {
+            grid-template-columns: 1fr;
+        }
+
+        .stats-bar-item + .stats-bar-item::before {
+            display: none;
+        }
+
+        .stats-bar-item {
+            padding: 28px 20px;
+            border-top: 1px solid rgba(255,255,255,0.05);
+        }
+
+        .cta-section {
+            padding: 80px 4%;
+        }
+
+        .cta-actions {
+            flex-direction: column;
+            align-items: center;
+        }
+
+            .cta-actions .btn-primary,
+            .cta-actions .btn-secondary {
+                width: 100%;
+                max-width: 300px;
+                justify-content: center;
+            }
+
+        .sector-tabs {
+            gap: 8px;
+        }
+
+        .sector-tab {
+            font-size: 0.68rem;
+            padding: 7px 14px;
+        }
+    }
+</style>
+
+<!-- ======================== HERO ======================== -->
+<section class="clients-hero">
+    <div class="hero-video-bg">
+        <video autoplay muted loop playsinline preload="auto">
+            <source src="~/Videos/dark_blue_particles.mov" type="video/mp4" />
+        </video>
+    </div>
+    <div class="hero-overlay-base"></div>
+    <div class="hero-overlay-radial"></div>
+    <div class="hero-scanline"></div>
+
+    <div class="hero-inner">
+        <div class="hero-eyebrow"><span class="eyebrow-dot"></span>Trusted Partners</div>
+        <h1>Trusted by Leading<strong>Organizations</strong></h1>
+        <div class="hero-divider"></div>
+        <p>We work with government entities, financial institutions, and industry leaders to deliver measurable impact, compliance, and operational excellence across multiple sectors and countries.</p>
+    </div>
+    <div class="hero-scroll"><span>Scroll</span><div class="scroll-line"></div></div>
+</section>
+
+<!-- ======================== STATS BAR ======================== -->
+<div class="stats-bar">
+    <div class="stats-bar-inner">
+        <div class="stats-bar-item"><h2>30+</h2><p>Enterprise Clients</p></div>
+        <div class="stats-bar-item"><h2>5+</h2><p>Countries</p></div>
+        <div class="stats-bar-item"><h2>10+</h2><p>Industry Sectors</p></div>
+        <div class="stats-bar-item"><h2>100+</h2><p>Projects Delivered</p></div>
+    </div>
+</div>
+
+<!-- ======================== LOGO TICKER ======================== -->
+<div class="ticker-section">
+    <div class="ticker-track">
+        <img src="~/images/clients/Arab-Bank.webp" class="ticker-logo" alt="Arab Bank" />
+        <img src="~/images/clients/ahlibank.jpg" class="ticker-logo" alt="Jordan Ahli Bank" />
+        <img src="~/images/clients/Jordan-Kuwait-Bank.png" class="ticker-logo" alt="Jordan Kuwait Bank" />
+        <img src="~/images/clients/AlphaCapital.jpg" class="ticker-logo" alt="Alpha Capital" />
+        <img src="~/images/clients/Nuqul.png" class="ticker-logo" alt="Nuqul Group" />
+        <img src="~/images/clients/Airport.png" class="ticker-logo" alt="Airport International Group" />
+        <img src="~/images/clients/Petrochem.png" class="ticker-logo" alt="Petrochem" />
+        <img src="~/images/clients/RaniaFoundation.jpg" class="ticker-logo" alt="Queen Rania Foundation" />
+        <img src="~/images/clients/ProgressSoft.jpg" class="ticker-logo" alt="ProgressSoft" />
+        <img src="~/images/clients/Riyadh.jpg" class="ticker-logo" alt="Riyadh Municipality" />
+        <img src="~/images/clients/Tabadul_img5_270w.jpg" class="ticker-logo" alt="Tabadul" />
+        <img src="~/images/clients/extensya.jpg" class="ticker-logo" alt="Extensya" />
+        <img src="~/images/clients/HalawaniBros.png" class="ticker-logo" alt="Halawani Bros" />
+        <img src="~/images/clients/shamara.webp" class="ticker-logo" alt="Shamara Holding" />
+        <!-- Duplicate for seamless loop -->
+        <img src="~/images/clients/Arab-Bank.webp" class="ticker-logo" alt="Arab Bank" />
+        <img src="~/images/clients/ahlibank.jpg" class="ticker-logo" alt="Jordan Ahli Bank" />
+        <img src="~/images/clients/Jordan-Kuwait-Bank.png" class="ticker-logo" alt="Jordan Kuwait Bank" />
+        <img src="~/images/clients/AlphaCapital.jpg" class="ticker-logo" alt="Alpha Capital" />
+        <img src="~/images/clients/Nuqul.png" class="ticker-logo" alt="Nuqul Group" />
+        <img src="~/images/clients/Airport.png" class="ticker-logo" alt="Airport International Group" />
+        <img src="~/images/clients/Petrochem.png" class="ticker-logo" alt="Petrochem" />
+        <img src="~/images/clients/RaniaFoundation.jpg" class="ticker-logo" alt="Queen Rania Foundation" />
+        <img src="~/images/clients/ProgressSoft.jpg" class="ticker-logo" alt="ProgressSoft" />
+        <img src="~/images/clients/Riyadh.jpg" class="ticker-logo" alt="Riyadh Municipality" />
+        <img src="~/images/clients/Tabadul_img5_270w.jpg" class="ticker-logo" alt="Tabadul" />
+        <img src="~/images/clients/extensya.jpg" class="ticker-logo" alt="Extensya" />
+        <img src="~/images/clients/HalawaniBros.png" class="ticker-logo" alt="Halawani Bros" />
+        <img src="~/images/clients/shamara.webp" class="ticker-logo" alt="Shamara Holding" />
+    </div>
+</div>
+
+<!-- ======================== CLIENTS GRID ======================== -->
+<section class="clients-section">
+    <div class="clients-header">
+        <div class="section-label">Our Portfolio</div>
+        <h2>Organizations That<br /><strong>Trust Edge Consulting</strong></h2>
+        <p>Building long-term partnerships with leading institutions across banking, government, energy, and technology sectors.</p>
+    </div>
+
+    <div class="sector-tabs">
+        <div class="sector-tab active" onclick="filterClients('all',this)">All Clients</div>
+        <div class="sector-tab" onclick="filterClients('banking',this)">Banking &amp; Finance</div>
+        <div class="sector-tab" onclick="filterClients('government',this)">Government</div>
+        <div class="sector-tab" onclick="filterClients('energy',this)">Energy</div>
+        <div class="sector-tab" onclick="filterClients('technology',this)">Technology</div>
+        <div class="sector-tab" onclick="filterClients('other',this)">Other</div>
+    </div>
+
+    <div class="clients-grid" id="clientsGrid">
+        <div class="client-card" data-sector="technology"><div class="client-logo-wrap"><img src="~/images/clients/Tabadul_img5_270w.jpg" class="client-logo" alt="Tabadul" /></div><div class="client-name">Tabadul</div><div class="client-sector">Technology</div></div>
+        <div class="client-card" data-sector="banking"><div class="client-logo-wrap"><img src="~/images/clients/الشركة-العربية-السعودية-للتأمين-التع.jpg" class="client-logo" alt="Saico Insurance" /></div><div class="client-name">Saico Insurance</div><div class="client-sector">Banking</div></div>
+        <div class="client-card" data-sector="government"><div class="client-logo-wrap"><img src="~/images/clients/MinOfCom.jpg" class="client-logo" alt="Ministry of Commerce" /></div><div class="client-name">Ministry of Commerce</div><div class="client-sector">Government</div></div>
+        <div class="client-card" data-sector="other"><div class="client-logo-wrap"><img src="~/images/clients/alaseel.png" class="client-logo" alt="Al Aseel" /></div><div class="client-name">Al Aseel</div><div class="client-sector">Other</div></div>
+        <div class="client-card" data-sector="other"><div class="client-logo-wrap"><img src="~/images/clients/Tawkeelat.jpg" class="client-logo" alt="Tawkeelat" /></div><div class="client-name">Tawkeelat</div><div class="client-sector">Other</div></div>
+        <div class="client-card" data-sector="government"><div class="client-logo-wrap"><img src="~/images/clients/Riyadh.jpg" class="client-logo" alt="Riyadh Region Municipality" /></div><div class="client-name">Riyadh Region Municipality</div><div class="client-sector">Government</div></div>
+        <div class="client-card" data-sector="energy"><div class="client-logo-wrap"><img src="~/images/clients/Petrochem.png" class="client-logo" alt="Petrochem" /></div><div class="client-name">Petrochem</div><div class="client-sector">Energy</div></div>
+        <div class="client-card" data-sector="banking"><div class="client-logo-wrap"><img src="~/images/clients/AlphaCapital.jpg" class="client-logo" alt="Alpha Capital" /></div><div class="client-name">Alpha Capital</div><div class="client-sector">Banking</div></div>
+        <div class="client-card" data-sector="other"><div class="client-logo-wrap"><img src="~/images/clients/HalawaniBros.png" class="client-logo" alt="Halawani Bros" /></div><div class="client-name">Halawani Bros</div><div class="client-sector">Other</div></div>
+        <div class="client-card" data-sector="government"><div class="client-logo-wrap"><img src="~/images/clients/RaniaFoundation.jpg" class="client-logo" alt="Queen Rania Foundation" /></div><div class="client-name">Queen Rania Foundation</div><div class="client-sector">Government</div></div>
+        <div class="client-card" data-sector="energy"><div class="client-logo-wrap"><img src="~/images/clients/GreenItalia.png" class="client-logo" alt="Green Italia" /></div><div class="client-name">Green Italia</div><div class="client-sector">Energy</div></div>
+        <div class="client-card" data-sector="energy"><div class="client-logo-wrap"><img src="~/images/clients/aes.jpg" class="client-logo" alt="AES" /></div><div class="client-name">AES</div><div class="client-sector">Energy</div></div>
+        <div class="client-card" data-sector="banking"><div class="client-logo-wrap"><img src="~/images/clients/ahlibank.jpg" class="client-logo" alt="Jordan Ahli Bank" /></div><div class="client-name">Jordan Ahli Bank</div><div class="client-sector">Banking</div></div>
+        <div class="client-card" data-sector="technology"><div class="client-logo-wrap"><img src="~/images/clients/extensya.jpg" class="client-logo" alt="Extensya" /></div><div class="client-name">Extensya</div><div class="client-sector">Technology</div></div>
+        <div class="client-card" data-sector="technology"><div class="client-logo-wrap"><img src="~/images/clients/ProgressSoft.jpg" class="client-logo" alt="ProgressSoft" /></div><div class="client-name">ProgressSoft</div><div class="client-sector">Technology</div></div>
+        <div class="client-card" data-sector="banking"><div class="client-logo-wrap"><img src="~/images/clients/Arab-Bank.webp" class="client-logo" alt="Arab Bank" /></div><div class="client-name">Arab Bank</div><div class="client-sector">Banking</div></div>
+        <div class="client-card" data-sector="other"><div class="client-logo-wrap"><img src="~/images/clients/Airport.png" class="client-logo" alt="Airport International Group" /></div><div class="client-name">Airport International Group</div><div class="client-sector">Other</div></div>
+        <div class="client-card" data-sector="technology"><div class="client-logo-wrap"><img src="~/images/clients/blink.jpg" class="client-logo" alt="Blink Network" /></div><div class="client-name">Blink Network</div><div class="client-sector">Technology</div></div>
+        <div class="client-card" data-sector="banking"><div class="client-logo-wrap"><img src="~/images/clients/Jordan-Kuwait-Bank.png" class="client-logo" alt="Jordan Kuwait Bank" /></div><div class="client-name">Jordan Kuwait Bank</div><div class="client-sector">Banking</div></div>
+        <div class="client-card" data-sector="banking"><div class="client-logo-wrap"><img src="~/images/clients/Union-Bank-of-Nigeria.jpg" class="client-logo" alt="Union Bank of Nigeria" /></div><div class="client-name">Union Bank of Nigeria</div><div class="client-sector">Banking</div></div>
+        <div class="client-card" data-sector="technology"><div class="client-logo-wrap"><img src="~/images/clients/ETQ.webp" class="client-logo" alt="ETQ" /></div><div class="client-name">ETQ</div><div class="client-sector">Technology</div></div>
+        <div class="client-card" data-sector="other"><div class="client-logo-wrap"><img src="~/images/clients/jettbus.jpeg" class="client-logo" alt="JETT Bus" /></div><div class="client-name">JETT Bus</div><div class="client-sector">Other</div></div>
+        <div class="client-card" data-sector="banking"><div class="client-logo-wrap"><img src="~/images/clients/sgbj_logo.jpg" class="client-logo" alt="SGBJ" /></div><div class="client-name">SGBJ</div><div class="client-sector">Banking</div></div>
+        <div class="client-card" data-sector="banking"><div class="client-logo-wrap"><img src="~/images/clients/MSHRBSH.jpg" class="client-logo" alt="Musharbash Exchange" /></div><div class="client-name">Musharbash Exchange</div><div class="client-sector">Banking</div></div>
+        <div class="client-card" data-sector="government"><div class="client-logo-wrap"><img src="~/images/clients/moe.gif" class="client-logo" alt="Ministry of Environment" /></div><div class="client-name">Ministry of Environment</div><div class="client-sector">Government</div></div>
+        <div class="client-card" data-sector="other"><div class="client-logo-wrap"><img src="~/images/clients/shamara.webp" class="client-logo" alt="Shamara Holding Group" /></div><div class="client-name">Shamara Holding Group</div><div class="client-sector">Other</div></div>
+        <div class="client-card" data-sector="other"><div class="client-logo-wrap"><img src="~/images/clients/taya.jpg" class="client-logo" alt="Taya Feed Mill" /></div><div class="client-name">Taya Feed Mill</div><div class="client-sector">Other</div></div>
+        <div class="client-card" data-sector="other"><div class="client-logo-wrap"><img src="~/images/clients/Nuqul.png" class="client-logo" alt="Nuqul Group" /></div><div class="client-name">Nuqul Group</div><div class="client-sector">Other</div></div>
+    </div>
+</section>
+
+<!-- ======================== VISION ======================== -->
+<section class="vision-section">
+    <div class="vision-quote">
+        <span class="vision-mark">"</span>
+        <p class="vision-text">Every client relationship is built on <strong>trust, transparency,</strong> and a shared commitment to achieving <strong>lasting, measurable results</strong>.</p>
+    </div>
+</section>
+
+<!-- ======================== CTA ======================== -->
+<section class="cta-section">
+    <div class="section-label" style="justify-content:center;margin-bottom:20px;">Join Our Clients</div>
+    <h2>Become Our Next <strong>Success Story</strong></h2>
+    <p>Join the growing list of organizations that trust Edge Consulting to deliver strategic clarity, governance excellence, and sustainable performance.</p>
+    <div class="cta-actions">
+        <a href="/Home/Contact" class="btn-primary">
+            <span>Start the Conversation</span>
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M12 5l7 7-7 7" /></svg>
+        </a>
+        <a href="/Home/Services" class="btn-secondary"><span>View Our Services</span></a>
+    </div>
+</section>
+
+<script>
+    function filterClients(sector, el) {
+        document.querySelectorAll('.sector-tab').forEach(t => t.classList.remove('active'));
+        el.classList.add('active');
+        let delay = 0;
+        document.querySelectorAll('.client-card').forEach(card => {
+            const match = sector === 'all' || card.dataset.sector === sector;
+            if (match) {
+                card.style.display = 'flex';
+                card.style.animationDelay = (delay * 0.05) + 's';
+                card.style.animation = 'none';
+                void card.offsetWidth;
+                card.style.animation = 'cardReveal 0.5s ease-out forwards';
+                delay++;
+            } else {
+                card.style.display = 'none';
+            }
+        });
+    }
+</script>
