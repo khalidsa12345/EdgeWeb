@@ -9,21 +9,20 @@ namespace EdgeWEB.Controllers
 {
     public class HomeController : Controller
     {
-      
-            public IActionResult Index() => View();
-            public IActionResult AboutUs() => View();
-            public IActionResult Services() => View();
-            public IActionResult Clients() => View();
-            public IActionResult Contact() => View();
+        public IActionResult Index() => View();
+        public IActionResult AboutUs() => View();
+        public IActionResult Services() => View();
+        public IActionResult Clients() => View();
+        public IActionResult Contact() => View();
 
-            [HttpGet]
-            public IActionResult RequestServices()
-            {
-                return View(new RequestServiceViewModel());
-            }
+        [HttpGet]
+        public IActionResult RequestServices()
+        {
+            return View(new RequestServiceViewModel());
+        }
 
 
-            [HttpPost]
+        [HttpPost]
         [ValidateAntiForgeryToken]
         public IActionResult SubmitServiceRequest(RequestServiceViewModel model)
         {
@@ -35,10 +34,8 @@ namespace EdgeWEB.Controllers
 
             try
             {
-                // 🔥 Force TLS 1.2 (important for Railway)
                 ServicePointManager.SecurityProtocol = SecurityProtocolType.Tls12;
 
-                // ✅ Collect services
                 var services = new List<string>();
                 if (model.StrategyPlanning) services.Add("Strategic Planning & Performance");
                 if (model.PMO) services.Add("Project Management (PMO)");
@@ -54,75 +51,76 @@ namespace EdgeWEB.Controllers
 
                 string servicesHtml = string.Join("", services.ConvertAll(s => $"<li>{s}</li>"));
 
-                // ✅ Email Body
+                string servicesHtml = "";
+                foreach (var s in services)
+                {
+                    servicesHtml += $"<li>{s}</li>";
+                }
+
+                // 🔥 EMAIL DESIGN
                 string body = $@"
                 <html>
-                <body style='font-family:Arial;background:#f4f6f8;padding:20px;'>
-                    <div style='max-width:600px;margin:auto;background:#fff;border-radius:10px;'>
+                <body style='font-family: Arial; background:#f4f6f8; padding:20px;'>
 
-                        <div style='background:#0b1f3a;color:#fff;padding:20px;text-align:center;'>
-                            <h2>Edge Consulting</h2>
-                            <p>New Service Request</p>
-                        </div>
+                <div style='max-width:600px; margin:auto; background:#fff; border-radius:10px; overflow:hidden;'>
 
-                        <div style='padding:20px;'>
-                            <h3>Selected Services</h3>
-                            <ul>{servicesHtml}</ul>
+                    <div style='background:#0b1f3a; color:#fff; padding:20px; text-align:center;'>
+                        <h2>Edge Consulting</h2>
+                        <p>New Service Request</p>
+                    </div>
 
-                            <hr/>
+                    <div style='padding:20px;'>
 
-                            <h3>Contact Information</h3>
-                            <p><b>Name:</b> {model.PersonName}</p>
-                            <p><b>Email:</b> {model.Email}</p>
-                            <p><b>Mobile:</b> {model.MobileNumber}</p>
-                            <p><b>Company:</b> {model.CompanyName}</p>
+                        <h3>Selected Services</h3>
+                        <ul>{servicesHtml}</ul>
 
-                            <hr/>
+                        <hr/>
 
-                            <h3>Notes</h3>
-                            <p>{model.Notes}</p>
-                        </div>
+                        <h3>Contact Info</h3>
+                        <p><b>Name:</b> {model.PersonName}</p>
+                        <p><b>Email:</b> {model.Email}</p>
+                        <p><b>Mobile:</b> {model.MobileNumber}</p>
+                        <p><b>Company:</b> {model.CompanyName}</p>
 
-                        <div style='background:#eee;padding:10px;text-align:center;font-size:12px;'>
-                            Submitted on {DateTime.Now}
-                        </div>
+                        <hr/>
+
+                        <h3>Notes</h3>
+                        <p>{model.Notes}</p>
 
                     </div>
+
+                    <div style='background:#eee; padding:10px; text-align:center; font-size:12px;'>
+                        {DateTime.Now}
+                    </div>
+
+                </div>
+
                 </body>
-                </html>";
+                </html>
+                ";
 
-                // ✅ Mail setup
-                var mail = new MailMessage();
-                mail.From = new MailAddress("info@edgesline.com", "Edge Website");
+
+                var mail = new MailMessage
+                {
+                    From = new MailAddress("info@edgesline.com", "Edge Website"),
+                    Subject = $"New Request from {model.PersonName}",
+                    Body = body,
+                    IsBodyHtml = true
+                };
+
                 mail.To.Add("info@edgesline.com");
-                mail.Subject = $"New Request from {model.PersonName}";
-                mail.Body = body;
-                mail.IsBodyHtml = true;
-
-                // 🔥 VERY IMPORTANT (prevents rejection)
-                mail.Headers.Add("X-Priority", "1");
-                mail.Headers.Add("X-MSMail-Priority", "High");
-
-                // Reply to client
                 mail.ReplyToList.Add(new MailAddress(model.Email));
 
-                // 🔥 SMTP CONFIG (BEST FOR BLUEHOST)
-                var smtp = new SmtpClient
+                // 🔥 GMAIL SMTP (WORKS ON RAILWAY)
+                var smtp = new SmtpClient("smtp.gmail.com", 587)
                 {
-                    Host = "mail.edgesline.com", // try this first
-                    Port = 587,
-                    EnableSsl = true,
-                    UseDefaultCredentials = false,
                     Credentials = new NetworkCredential(
                         "info@edgesline.com",
                         "MM@12345678m$@345#"
                     ),
-                    DeliveryMethod = SmtpDeliveryMethod.Network,
-                    Timeout = 30000
+                    EnableSsl = true,
+                    Timeout = 20000
                 };
-
-                // 🔥 Critical for Railway + Bluehost
-                smtp.TargetName = "STARTTLS/mail.edgesline.com";
 
                 smtp.Send(mail);
 
