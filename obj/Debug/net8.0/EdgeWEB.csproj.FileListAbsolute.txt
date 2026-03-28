@@ -139,3 +139,9 @@ C:\Users\KhaledAburas\OneDrive - UBA\Desktop\EDGE\EdgeWEB\EdgeWEB\obj\Debug\net8
 C:\Users\KhaledAburas\OneDrive - UBA\Desktop\EDGE\EdgeWEB\EdgeWEB\obj\Debug\net8.0\EdgeWEB.pdb
 C:\Users\KhaledAburas\OneDrive - UBA\Desktop\EDGE\EdgeWEB\EdgeWEB\obj\Debug\net8.0\EdgeWEB.genruntimeconfig.cache
 C:\Users\KhaledAburas\OneDrive - UBA\Desktop\EDGE\EdgeWEB\EdgeWEB\obj\Debug\net8.0\ref\EdgeWEB.dll
+C:\Users\KhaledAburas\OneDrive - UBA\Desktop\EDGE\EdgeWEB\EdgeWEB\bin\Debug\net8.0\Microsoft.AspNetCore.WebUtilities.dll
+C:\Users\KhaledAburas\OneDrive - UBA\Desktop\EDGE\EdgeWEB\EdgeWEB\bin\Debug\net8.0\Microsoft.Net.Http.Headers.dll
+C:\Users\KhaledAburas\OneDrive - UBA\Desktop\EDGE\EdgeWEB\EdgeWEB\bin\Debug\net8.0\Newtonsoft.Json.dll
+C:\Users\KhaledAburas\OneDrive - UBA\Desktop\EDGE\EdgeWEB\EdgeWEB\bin\Debug\net8.0\Resend.dll
+C:\Users\KhaledAburas\OneDrive - UBA\Desktop\EDGE\EdgeWEB\EdgeWEB\bin\Debug\net8.0\SendGrid.dll
+C:\Users\KhaledAburas\OneDrive - UBA\Desktop\EDGE\EdgeWEB\EdgeWEB\bin\Debug\net8.0\StarkbankEcdsa.dll

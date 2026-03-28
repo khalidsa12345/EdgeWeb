@@ -1,8 +1,10 @@
 ﻿using EdgeWEB.Models;
 using Microsoft.AspNetCore.Mvc;
-using Resend;
 using System;
 using System.Collections.Generic;
+using System.Net.Http;
+using System.Text;
+using System.Text.Json;
 using System.Threading.Tasks;
 
 namespace EdgeWEB.Controllers
@@ -33,6 +35,7 @@ namespace EdgeWEB.Controllers
 
             try
             {
+                // Build services list
                 var services = new List<string>();
                 if (model.StrategyPlanning) services.Add("Strategic Planning & Performance");
                 if (model.PMO) services.Add("Project Management (PMO)");
@@ -50,6 +53,7 @@ namespace EdgeWEB.Controllers
                 foreach (var s in services)
                     servicesHtml += $"<li>{s}</li>";
 
+                // Email body
                 string body = $@"
                 <html>
                 <body style='font-family: Arial; background:#f4f6f8; padding:20px;'>
@@ -78,17 +82,29 @@ namespace EdgeWEB.Controllers
                 </body>
                 </html>";
 
-                // ✅ Resend API
-                var resend = new ResendClient("re_TN2sT2HF_BHW9gwfuoJBuBNYvqKXaRjPw");
-                var email = new EmailMessage
-                {
-                    From = "Edge Website <onboarding@resend.dev>",
-                    Subject = $"New Request from {model.PersonName}",
-                    HtmlBody = body
-                };
-                email.To.Add("info@edgesline.com");
+                // ✅ Resend API via HttpClient
+                using var httpClient = new HttpClient();
+                httpClient.DefaultRequestHeaders.Add("Authorization", "Bearer re_TN2sT2HF_BHW9gwfuoJBuBNYvqKXaRjPw");
 
-                await resend.EmailSendAsync(email);
+                var payload = new
+                {
+                    from = "Edge Website <onboarding@resend.dev>",
+                    to = new[] { "info@edgesline.com" },
+                    reply_to = model.Email,
+                    subject = $"New Request from {model.PersonName}",
+                    html = body
+                };
+
+                var json = JsonSerializer.Serialize(payload);
+                var content = new StringContent(json, Encoding.UTF8, "application/json");
+
+                var result = await httpClient.PostAsync("https://api.resend.com/emails", content);
+
+                if (!result.IsSuccessStatusCode)
+                {
+                    var error = await result.Content.ReadAsStringAsync();
+                    throw new Exception("Resend error: " + error);
+                }
 
                 TempData["SuccessMessage"] = "Request sent successfully!";
                 return RedirectToAction("RequestServices");

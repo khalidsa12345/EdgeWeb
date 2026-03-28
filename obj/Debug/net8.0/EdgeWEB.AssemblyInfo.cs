@@ -14,7 +14,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("EdgeWEB")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+90c4a95647792ae6c28347eaccd5e2f720e55944")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+ebdfdd4be77c8c051e633b5a39de25245aefe5f5")]
 [assembly: System.Reflection.AssemblyProductAttribute("EdgeWEB")]
 [assembly: System.Reflection.AssemblyTitleAttribute("EdgeWEB")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]
