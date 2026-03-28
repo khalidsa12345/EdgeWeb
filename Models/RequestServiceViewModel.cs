@@ -36,10 +36,7 @@ namespace EdgeWEB.Models
         public string CompanyName { get; set; }
 
         // Additional Information
-        [Display(Name = "Add Note")]
-        public string AddNote { get; set; }
-
-        [Display(Name = "Notes")]
-        public string Notes { get; set; }
+        public string? Notes { get; set; } // ✅ no [Required]
+        public string AddNote { get; set; } = "No"; // ✅ default to No
     }
 }
