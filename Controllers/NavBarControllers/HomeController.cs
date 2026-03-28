@@ -34,8 +34,10 @@ namespace EdgeWEB.Controllers
 
             try
             {
+                // 🔥 FIX TLS (IMPORTANT)
                 ServicePointManager.SecurityProtocol = SecurityProtocolType.Tls12;
 
+                // Build services list
                 var services = new List<string>();
                 if (model.StrategyPlanning) services.Add("Strategic Planning & Performance");
                 if (model.PMO) services.Add("Project Management (PMO)");
@@ -48,8 +50,6 @@ namespace EdgeWEB.Controllers
                 if (model.BusinessProcess) services.Add("Business Process Management");
                 if (model.AI) services.Add("Artificial Intelligence");
                 if (model.CyberSecurity) services.Add("Cyber Security");
-
-                string servicesHtml = string.Join("", services.ConvertAll(s => $"<li>{s}</li>"));
 
                 string servicesHtml = "";
                 foreach (var s in services)
@@ -99,7 +99,6 @@ namespace EdgeWEB.Controllers
                 </html>
                 ";
 
-
                 var mail = new MailMessage
                 {
                     From = new MailAddress("info@edgesline.com", "Edge Website"),
@@ -109,16 +108,19 @@ namespace EdgeWEB.Controllers
                 };
 
                 mail.To.Add("info@edgesline.com");
+
+                // Reply goes to client
                 mail.ReplyToList.Add(new MailAddress(model.Email));
 
-                // 🔥 GMAIL SMTP (WORKS ON RAILWAY)
-                var smtp = new SmtpClient("smtp.gmail.com", 587)
+                // 🔥 SMTP CONFIG (FIXED)
+                var smtp = new SmtpClient
                 {
-                    Credentials = new NetworkCredential(
-                        "info@edgesline.com",
-                        "MM@12345678m$@345#"
-                    ),
+                    Host = "mail.edgesline.com",
+                    Port = 587,
                     EnableSsl = true,
+                    UseDefaultCredentials = false,
+                    Credentials = new NetworkCredential("info@edgesline.com", "MM@12345678m$@345#"),
+                    DeliveryMethod = SmtpDeliveryMethod.Network,
                     Timeout = 20000
                 };
 
