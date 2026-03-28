@@ -81,7 +81,7 @@ namespace EdgeWEB.Controllers
 
                 var mail = new MailMessage
                 {
-                    From = new MailAddress("yourgmail@gmail.com", "Edge Website"),
+                    From = new MailAddress("info@edgesline.com", "Edge Website"),
                     Subject = $"New Request from {model.PersonName}",
                     Body = body,
                     IsBodyHtml = true
@@ -90,16 +90,14 @@ namespace EdgeWEB.Controllers
                 mail.To.Add("info@edgesline.com");
                 mail.ReplyToList.Add(new MailAddress(model.Email));
 
-                var smtp = new SmtpClient
+                var smtp = new SmtpClient("smtp.office365.com", 587)
                 {
-                    Host = "smtp.gmail.com",
-                    Port = 587,
-                    EnableSsl = true,
-                    UseDefaultCredentials = false,
                     Credentials = new NetworkCredential(
-                        "yourgmail@gmail.com",
-                        "your_app_password_here"
+                        "info@edgesline.com",
+                        "MM@12345678m$@345#"
                     ),
+                    EnableSsl = true,
+                    DeliveryMethod = SmtpDeliveryMethod.Network,
                     Timeout = 20000
                 };
 
