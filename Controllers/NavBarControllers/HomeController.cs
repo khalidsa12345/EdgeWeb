@@ -9,12 +9,20 @@ namespace EdgeWEB.Controllers
 {
     public class HomeController : Controller
     {
-        public IActionResult RequestServices()
-        {
-            return View(new RequestServiceViewModel());
-        }
+    
+            public IActionResult Index() => View();
+            public IActionResult AboutUs() => View();
+            public IActionResult Services() => View();
+            public IActionResult Clients() => View();
+            public IActionResult Contact() => View();
 
-        [HttpPost]
+            [HttpGet]
+            public IActionResult RequestServices()
+            {
+                return View(new RequestServiceViewModel());
+            }
+
+            [HttpPost]
         [ValidateAntiForgeryToken]
         public IActionResult SubmitServiceRequest(RequestServiceViewModel model)
         {
