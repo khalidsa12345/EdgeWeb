@@ -975,14 +975,14 @@
                         <label class="form-label">
                             Full Name <span class="req-star">*</span>
                         </label>
-                        @Html.TextBoxFor(m => m.PersonName, new { @class = "form-control", placeholder = "John Smith" })
+                        @Html.TextBoxFor(m => m.PersonName, new { @class = "form-control",  })
                         @Html.ValidationMessageFor(m => m.PersonName, "", new { @class = "text-danger" })
                     </div>
                     <div class="form-group">
                         <label class="form-label">
                             Email Address <span class="req-star">*</span>
                         </label>
-                        @Html.TextBoxFor(m => m.Email, new { @class = "form-control", type = "email", placeholder = "john@company.com" })
+                        @Html.TextBoxFor(m => m.Email, new { @class = "form-control", type = "email", })
                         @Html.ValidationMessageFor(m => m.Email, "", new { @class = "text-danger" })
                     </div>
                 </div>
@@ -993,14 +993,14 @@
                         <label class="form-label">
                             Mobile Number <span class="req-star">*</span>
                         </label>
-                        @Html.TextBoxFor(m => m.MobileNumber, new { @class = "form-control", type = "tel", placeholder = "+966 55 000 0000" })
+                        @Html.TextBoxFor(m => m.MobileNumber, new { @class = "form-control", type = "tel", })
                         @Html.ValidationMessageFor(m => m.MobileNumber, "", new { @class = "text-danger" })
                     </div>
                     <div class="form-group">
                         <label class="form-label">
                             Company Name
                         </label>
-                        @Html.TextBoxFor(m => m.CompanyName, new { @class = "form-control", placeholder = "Your Company Ltd." })
+                        @Html.TextBoxFor(m => m.CompanyName, new { @class = "form-control",  })
                     </div>
                 </div>
 
@@ -1035,7 +1035,7 @@
                 <div id="notesPanel" class="notes-panel hidden">
                     <div class="form-group" style="margin-top:20px;">
                         <label class="form-label">Notes</label>
-                        @Html.TextAreaFor(m => m.Notes, new { @class = "form-control", rows = 6, placeholder = "Tell us more about your needs..." })
+                        @Html.TextAreaFor(m => m.Notes, new { @class = "form-control", rows = 6 })
                     </div>
                 </div>
 
