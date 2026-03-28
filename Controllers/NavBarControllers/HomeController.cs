@@ -9,20 +9,12 @@ namespace EdgeWEB.Controllers
 {
     public class HomeController : Controller
     {
-    
-            public IActionResult Index() => View();
-            public IActionResult AboutUs() => View();
-            public IActionResult Services() => View();
-            public IActionResult Clients() => View();
-            public IActionResult Contact() => View();
+        public IActionResult RequestServices()
+        {
+            return View(new RequestServiceViewModel());
+        }
 
-            [HttpGet]
-            public IActionResult RequestServices()
-            {
-                return View(new RequestServiceViewModel());
-            }
-
-            [HttpPost]
+        [HttpPost]
         [ValidateAntiForgeryToken]
         public IActionResult SubmitServiceRequest(RequestServiceViewModel model)
         {
@@ -34,8 +26,10 @@ namespace EdgeWEB.Controllers
 
             try
             {
+                // 🔥 Force TLS (important for Railway)
                 ServicePointManager.SecurityProtocol = SecurityProtocolType.Tls12;
 
+                // ✅ Collect selected services
                 var services = new List<string>();
                 if (model.StrategyPlanning) services.Add("Strategic Planning & Performance");
                 if (model.PMO) services.Add("Project Management (PMO)");
@@ -51,6 +45,7 @@ namespace EdgeWEB.Controllers
 
                 string servicesHtml = string.Join("", services.ConvertAll(s => $"<li>{s}</li>"));
 
+                // ✅ Email Body (Nice Design)
                 string body = $@"
                 <html>
                 <body style='font-family: Arial; background:#f4f6f8; padding:20px;'>
@@ -67,7 +62,7 @@ namespace EdgeWEB.Controllers
 
                         <hr/>
 
-                        <h3>Contact Info</h3>
+                        <h3>Contact Information</h3>
                         <p><b>Name:</b> {model.PersonName}</p>
                         <p><b>Email:</b> {model.Email}</p>
                         <p><b>Mobile:</b> {model.MobileNumber}</p>
@@ -80,13 +75,14 @@ namespace EdgeWEB.Controllers
                     </div>
 
                     <div style='background:#eee; padding:10px; text-align:center; font-size:12px;'>
-                        {DateTime.Now}
+                        Submitted on {DateTime.Now}
                     </div>
 
                 </div>
                 </body>
                 </html>";
 
+                // ✅ Create Mail
                 var mail = new MailMessage
                 {
                     From = new MailAddress("info@edgesline.com", "Edge Website"),
@@ -98,7 +94,8 @@ namespace EdgeWEB.Controllers
                 mail.To.Add("info@edgesline.com");
                 mail.ReplyToList.Add(new MailAddress(model.Email));
 
-                var smtp = new SmtpClient("smtp.office365.com", 587)
+                // 🔥 IMPORTANT: CHANGE THIS HOST FROM CPANEL
+                var smtp = new SmtpClient("boxXXX.bluehost.com", 587)
                 {
                     Credentials = new NetworkCredential(
                         "info@edgesline.com",
@@ -108,6 +105,9 @@ namespace EdgeWEB.Controllers
                     DeliveryMethod = SmtpDeliveryMethod.Network,
                     Timeout = 20000
                 };
+
+                // 🔥 Extra fix for Railway
+                smtp.TargetName = "STARTTLS/smtp.bluehost.com";
 
                 smtp.Send(mail);
 
