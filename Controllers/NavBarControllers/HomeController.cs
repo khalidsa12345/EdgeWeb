@@ -9,18 +9,10 @@ namespace EdgeWEB.Controllers
 {
     public class HomeController : Controller
     {
-        public IActionResult Index() => View();
-        public IActionResult AboutUs() => View();
-        public IActionResult Services() => View();
-        public IActionResult Clients() => View();
-        public IActionResult Contact() => View();
-
-        [HttpGet]
         public IActionResult RequestServices()
         {
             return View(new RequestServiceViewModel());
         }
-
 
         [HttpPost]
         [ValidateAntiForgeryToken]
@@ -34,10 +26,8 @@ namespace EdgeWEB.Controllers
 
             try
             {
-                // 🔥 FIX TLS (IMPORTANT)
                 ServicePointManager.SecurityProtocol = SecurityProtocolType.Tls12;
 
-                // Build services list
                 var services = new List<string>();
                 if (model.StrategyPlanning) services.Add("Strategic Planning & Performance");
                 if (model.PMO) services.Add("Project Management (PMO)");
@@ -51,18 +41,12 @@ namespace EdgeWEB.Controllers
                 if (model.AI) services.Add("Artificial Intelligence");
                 if (model.CyberSecurity) services.Add("Cyber Security");
 
-                string servicesHtml = "";
-                foreach (var s in services)
-                {
-                    servicesHtml += $"<li>{s}</li>";
-                }
+                string servicesHtml = string.Join("", services.ConvertAll(s => $"<li>{s}</li>"));
 
-                // 🔥 EMAIL DESIGN
                 string body = $@"
                 <html>
                 <body style='font-family: Arial; background:#f4f6f8; padding:20px;'>
-
-                <div style='max-width:600px; margin:auto; background:#fff; border-radius:10px; overflow:hidden;'>
+                <div style='max-width:600px; margin:auto; background:#fff; border-radius:10px;'>
 
                     <div style='background:#0b1f3a; color:#fff; padding:20px; text-align:center;'>
                         <h2>Edge Consulting</h2>
@@ -70,7 +54,6 @@ namespace EdgeWEB.Controllers
                     </div>
 
                     <div style='padding:20px;'>
-
                         <h3>Selected Services</h3>
                         <ul>{servicesHtml}</ul>
 
@@ -86,7 +69,6 @@ namespace EdgeWEB.Controllers
 
                         <h3>Notes</h3>
                         <p>{model.Notes}</p>
-
                     </div>
 
                     <div style='background:#eee; padding:10px; text-align:center; font-size:12px;'>
@@ -94,33 +76,30 @@ namespace EdgeWEB.Controllers
                     </div>
 
                 </div>
-
                 </body>
-                </html>
-                ";
+                </html>";
 
                 var mail = new MailMessage
                 {
-                    From = new MailAddress("info@edgesline.com", "Edge Website"),
+                    From = new MailAddress("yourgmail@gmail.com", "Edge Website"),
                     Subject = $"New Request from {model.PersonName}",
                     Body = body,
                     IsBodyHtml = true
                 };
 
                 mail.To.Add("info@edgesline.com");
-
-                // Reply goes to client
                 mail.ReplyToList.Add(new MailAddress(model.Email));
 
-                // 🔥 SMTP CONFIG (FIXED)
                 var smtp = new SmtpClient
                 {
-                    Host = "mail.edgesline.com",
+                    Host = "smtp.gmail.com",
                     Port = 587,
                     EnableSsl = true,
                     UseDefaultCredentials = false,
-                    Credentials = new NetworkCredential("info@edgesline.com", "MM@12345678m$@345#"),
-                    DeliveryMethod = SmtpDeliveryMethod.Network,
+                    Credentials = new NetworkCredential(
+                        "yourgmail@gmail.com",
+                        "your_app_password_here"
+                    ),
                     Timeout = 20000
                 };
 
