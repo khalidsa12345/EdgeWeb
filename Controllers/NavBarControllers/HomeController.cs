@@ -84,7 +84,7 @@ namespace EdgeWEB.Controllers
 
                 // ✅ Resend API via HttpClient
                 using var httpClient = new HttpClient();
-                httpClient.DefaultRequestHeaders.Add("Authorization", "Bearer re_TN2sT2HF_BHW9gwfuoJBuBNYvqKXaRjPw");
+                httpClient.DefaultRequestHeaders.Add("Authorization", "Bearer re_3Sgxiids_KVuMyaWz76933aFQauWTb4LX");
 
                 var payload = new
                 {
