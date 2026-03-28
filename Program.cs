@@ -1,14 +1,17 @@
 ﻿var builder = WebApplication.CreateBuilder(args);
 
-// 👇 Tell ASP.NET to use the Render port
-var port = Environment.GetEnvironmentVariable("PORT") ?? "8080";
-builder.WebHost.UseUrls($"http://0.0.0.0:{port}");
+// ✅ Only use PORT on Render
+var port = Environment.GetEnvironmentVariable("PORT");
+if (!string.IsNullOrEmpty(port))
+{
+    builder.WebHost.UseUrls($"http://0.0.0.0:{port}");
+}
 
 builder.Services.AddControllersWithViews();
 
 var app = builder.Build();
 
-// Optional: you can remove this on Render to avoid warning
+// ❌ Disable HTTPS locally if causing issue
 // app.UseHttpsRedirection();
 
 app.UseStaticFiles();

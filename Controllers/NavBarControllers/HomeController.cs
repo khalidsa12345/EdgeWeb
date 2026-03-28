@@ -2,10 +2,8 @@
 using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Net;
 using System.Net.Mail;
-using System.Text;
 
 namespace EdgeWEB.Controllers
 {
@@ -23,103 +21,117 @@ namespace EdgeWEB.Controllers
             return View(new RequestServiceViewModel());
         }
 
+
         [HttpPost]
         [ValidateAntiForgeryToken]
         public IActionResult SubmitServiceRequest(RequestServiceViewModel model)
         {
-            // Check if at least one service is selected
-            if (!(model.StrategyPlanning || model.PMO || model.Governance ||
-                  model.ISO || model.Digital || model.Financial ||
-                  model.Sustainability || model.HR || model.BusinessProcess))
-            {
-                ModelState.AddModelError("Services", "Please select at least one service.");
-            }
-
             if (!ModelState.IsValid)
             {
-                TempData["ErrorMessage"] = "Please fill in all required fields correctly.";
+                TempData["ErrorMessage"] = "Please fill all required fields.";
                 return View("RequestServices", model);
             }
 
             try
             {
-                // Build selected services list
-                var selectedServices = new List<string>();
-                if (model.StrategyPlanning) selectedServices.Add("Strategic Planning & Performance");
-                if (model.PMO) selectedServices.Add("Project Management (PMO)");
-                if (model.Governance) selectedServices.Add("Governance & Risk Management");
-                if (model.ISO) selectedServices.Add("ISO & Excellence Models");
-                if (model.Digital) selectedServices.Add("Digital & Technology Solutions");
-                if (model.Financial) selectedServices.Add("Financial Advisory");
-                if (model.Sustainability) selectedServices.Add("Sustainability & Energy");
-                if (model.HR) selectedServices.Add("HR & Restructuring");
-                if (model.BusinessProcess) selectedServices.Add("Business Process Management");
-                if (model.AI) selectedServices.Add("AI & Data Analytics");
-                if (model.CyberSecurity) selectedServices.Add("Cybersecurity & Compliance");
+                // 🔥 FIX TLS (IMPORTANT)
+                ServicePointManager.SecurityProtocol = SecurityProtocolType.Tls12;
 
-                // Build email body
-                var emailBody = new StringBuilder();
-                emailBody.AppendLine("NEW SERVICE REQUEST FROM EDGE CONSULTING WEBSITE");
-                emailBody.AppendLine("=====================================================");
-                emailBody.AppendLine();
+                // Build services list
+                var services = new List<string>();
+                if (model.StrategyPlanning) services.Add("Strategic Planning & Performance");
+                if (model.PMO) services.Add("Project Management (PMO)");
+                if (model.Governance) services.Add("Governance & Risk Management");
+                if (model.ISO) services.Add("ISO & Excellence Models");
+                if (model.Digital) services.Add("Digital & Technology Solutions");
+                if (model.Financial) services.Add("Financial Advisory");
+                if (model.Sustainability) services.Add("Sustainability & Energy");
+                if (model.HR) services.Add("HR & Restructuring");
+                if (model.BusinessProcess) services.Add("Business Process Management");
+                if (model.AI) services.Add("Artificial Intelligence");
+                if (model.CyberSecurity) services.Add("Cyber Security");
 
-                emailBody.AppendLine("SELECTED SERVICES:");
-                emailBody.AppendLine("------------------");
-                foreach (var service in selectedServices)
+                string servicesHtml = "";
+                foreach (var s in services)
                 {
-                    emailBody.AppendLine($"✓ {service}");
-                }
-                emailBody.AppendLine();
-
-                emailBody.AppendLine("CONTACT INFORMATION:");
-                emailBody.AppendLine("--------------------");
-                emailBody.AppendLine($"Name: {model.PersonName}");
-                emailBody.AppendLine($"Email: {model.Email}");
-                emailBody.AppendLine($"Mobile: {model.MobileNumber}");
-                emailBody.AppendLine($"Company: {model.CompanyName ?? "Not provided"}");
-                emailBody.AppendLine();
-
-                if (model.AddNote == "Yes" && !string.IsNullOrWhiteSpace(model.Notes))
-                {
-                    emailBody.AppendLine("ADDITIONAL NOTES:");
-                    emailBody.AppendLine("-----------------");
-                    emailBody.AppendLine(model.Notes);
-                    emailBody.AppendLine();
+                    servicesHtml += $"<li>{s}</li>";
                 }
 
-                emailBody.AppendLine("=====================================================");
-                emailBody.AppendLine($"Request submitted on: {DateTime.Now:dddd, MMMM dd, yyyy 'at' hh:mm tt}");
+                // 🔥 EMAIL DESIGN
+                string body = $@"
+                <html>
+                <body style='font-family: Arial; background:#f4f6f8; padding:20px;'>
 
-                // Create email
-                var fromEmail = "kingkaloodfi@gmail.com";
+                <div style='max-width:600px; margin:auto; background:#fff; border-radius:10px; overflow:hidden;'>
+
+                    <div style='background:#0b1f3a; color:#fff; padding:20px; text-align:center;'>
+                        <h2>Edge Consulting</h2>
+                        <p>New Service Request</p>
+                    </div>
+
+                    <div style='padding:20px;'>
+
+                        <h3>Selected Services</h3>
+                        <ul>{servicesHtml}</ul>
+
+                        <hr/>
+
+                        <h3>Contact Info</h3>
+                        <p><b>Name:</b> {model.PersonName}</p>
+                        <p><b>Email:</b> {model.Email}</p>
+                        <p><b>Mobile:</b> {model.MobileNumber}</p>
+                        <p><b>Company:</b> {model.CompanyName}</p>
+
+                        <hr/>
+
+                        <h3>Notes</h3>
+                        <p>{model.Notes}</p>
+
+                    </div>
+
+                    <div style='background:#eee; padding:10px; text-align:center; font-size:12px;'>
+                        {DateTime.Now}
+                    </div>
+
+                </div>
+
+                </body>
+                </html>
+                ";
+
                 var mail = new MailMessage
                 {
-                    From = new MailAddress(fromEmail, "Edge Consulting Website"),
-                    Subject = $"New Service Request - {model.PersonName}",
-                    Body = emailBody.ToString(),
-                    IsBodyHtml = false
+                    From = new MailAddress("info@edgesline.com", "Edge Website"),
+                    Subject = $"New Request from {model.PersonName}",
+                    Body = body,
+                    IsBodyHtml = true
                 };
 
-                // Send to your email
-                mail.To.Add(fromEmail);
+                mail.To.Add("info@edgesline.com");
 
-                // Configure SMTP
-                var smtp = new SmtpClient("smtp.gmail.com", 587)
+                // Reply goes to client
+                mail.ReplyToList.Add(new MailAddress(model.Email));
+
+                // 🔥 SMTP CONFIG (FIXED)
+                var smtp = new SmtpClient
                 {
+                    Host = "mail.edgesline.com",
+                    Port = 587,
                     EnableSsl = true,
-                    Credentials = new NetworkCredential(fromEmail, "xybcvqqzmvvljvrm")
+                    UseDefaultCredentials = false,
+                    Credentials = new NetworkCredential("info@edgesline.com", "MM@12345678m$@345#"),
+                    DeliveryMethod = SmtpDeliveryMethod.Network,
+                    Timeout = 20000
                 };
 
-                // Send email
                 smtp.Send(mail);
 
-                TempData["SuccessMessage"] = "Thank you! Your service request has been sent successfully. We will contact you within 24 hours.";
-                return RedirectToAction(nameof(RequestServices));
+                TempData["SuccessMessage"] = "Request sent successfully!";
+                return RedirectToAction("RequestServices");
             }
             catch (Exception ex)
             {
-                // Log the error (you can add logging here)
-                TempData["ErrorMessage"] = "An error occurred while sending your request. Please try again or contact us directly.";
+                TempData["ErrorMessage"] = "ERROR: " + ex.Message;
                 return View("RequestServices", model);
             }
         }

@@ -109,7 +109,6 @@ wwwroot\lib\jquery\dist\jquery.slim.min.map
 wwwroot\lib\jquery\LICENSE.txt
 wwwroot\Videos\dark_blue_particles.mov
 wwwroot\Videos\data_analysis_digital.mov
-C:\Users\KhaledAburas\OneDrive - UBA\Desktop\EDGE\EdgeWEB\EdgeWEB\wwwroot\lib\jquery\LICENSE.txt
 C:\Users\KhaledAburas\OneDrive - UBA\Desktop\EDGE\EdgeWEB\EdgeWEB\wwwroot\css\site.css
 C:\Users\KhaledAburas\OneDrive - UBA\Desktop\EDGE\EdgeWEB\EdgeWEB\wwwroot\favicon.ico
 C:\Users\KhaledAburas\OneDrive - UBA\Desktop\EDGE\EdgeWEB\EdgeWEB\wwwroot\js\site.js
@@ -171,3 +170,4 @@ C:\Users\KhaledAburas\OneDrive - UBA\Desktop\EDGE\EdgeWEB\EdgeWEB\wwwroot\lib\jq
 C:\Users\KhaledAburas\OneDrive - UBA\Desktop\EDGE\EdgeWEB\EdgeWEB\wwwroot\lib\jquery\dist\jquery.slim.js
 C:\Users\KhaledAburas\OneDrive - UBA\Desktop\EDGE\EdgeWEB\EdgeWEB\wwwroot\lib\jquery\dist\jquery.slim.min.js
 C:\Users\KhaledAburas\OneDrive - UBA\Desktop\EDGE\EdgeWEB\EdgeWEB\wwwroot\lib\jquery\dist\jquery.slim.min.map
+C:\Users\KhaledAburas\OneDrive - UBA\Desktop\EDGE\EdgeWEB\EdgeWEB\wwwroot\lib\jquery\LICENSE.txt
